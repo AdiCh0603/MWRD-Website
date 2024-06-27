@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import path from "path";
 
 const app = express();
 const port = 3000; // The port for running the file in localhost
@@ -19,19 +20,22 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+// Define the root directory
+const rootDir = path.resolve();
+
 // Route to the home page
 app.get("/", (req, res) => {
-    res.sendFile("/Users/adityachaudhary/Desktop/Projects/Ps1/MWRD_JS/public/index.html");
+    res.sendFile(path.join(rootDir, "public", "index.html"));
 });
 
 // Route to the registration page
 app.get("/register", (req, res) => {
-    res.sendFile("/Users/adityachaudhary/Desktop/Projects/Ps1/MWRD_JS/public/register.html");
+    res.sendFile(path.join(rootDir, "public", "register.html"));
 });
 
 // Route to the login page
 app.get("/login", (req, res) => {
-    res.sendFile("/Users/adityachaudhary/Desktop/Projects/Ps1/MWRD_JS/public/login.html");
+    res.sendFile(path.join(rootDir, "public", "login.html"));
 });
 
 // Route to handle registration form submission
