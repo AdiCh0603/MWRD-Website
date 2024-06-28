@@ -1,19 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <link rel="stylesheet" href="styles.css">
+<script>
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}    
+  x[myIndex-1].style.display = "block";  
+  setTimeout(carousel, 9000);    
+}
+</script>
+<style>
+.button {
+  background-color: #04AA6D; 
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.button2 {background-color: #008CBA;} 
+.button3 {background-color: #f44336;}  
+.button4 {background-color: #e7e7e7; color: black;}  
+.button5 {background-color: #555555;} 
+</style>
 </head>
-<body>
-    <div style="width: 300px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <h2>Welcome to the Website of MWRD Bihar Website</h2>
-        <h5>If you are a new user,proceed to "Register".</h5>
-        <h5>If you are a registered user,proceed to "Login".</h5>
-        <a href="/register">Register</a>
-        <br>
-        <a href="/login">Login</a>
-    </div>
+<body bgcolor="#FAEBD7">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<h2 align="center" Color="red">Mukhyamantri Niji Nalkoop Yojna</h2>
+
+<p>A scheme under MWRD,Government of BIhar</p>
+
+  <p>
+
+  <img class="mySlides w3-animate-fading" src="https://images.pexels.com/photos/259280/pexels-photo-259280.jpeg?cs=srgb&dl=pexels-pixabay-259280.jpg&fm=jpg" width="270" height="270" >
+  <img class="mySlides w3-animate-fading" src="https://images.unsplash.com/reserve/bOvf94dPRxWu0u3QsPjF_tree.jpg?ixid=M3wxMjA3fDB8MXxzZWFyY2h8M3x8bmF0dXJhbHxlbnwwfHx8fDE3MTk0Mjc2NjR8MA&ixlib=rb-4.0.3" width="270" height="270">
+  <img class="mySlides w3-animate-fading" src="https://5.imimg.com/data5/SELLER/Default/2023/5/306311055/EN/FG/ZB/188868918/check-dam-construction-service.jpg" width="270" height="270">
+  <img class="mySlides w3-animate-fading" src="https://images.pexels.com/photos/518485/pexels-photo-518485.jpeg?cs=srgb&dl=pexels-eberhardgross-518485.jpg&fm=jpg" height="270">
+  </p>
+
+<button class="button button1" onclick="location.href='#aboutus';">About MWRD</button>
+<button class="button button2" onclick="location.href='#vision';">vision</button>
+<button class="button button3" onclick="location.href='#abtsch';">About The Scheme</button>
+<a href="/register" class="button">Register</a>
+<a href="/login" class="button">Login</a>
+<h3 id="aboutus" align="center">About Us</h3>
+<p align="center">
+Bihar Government notified Minor Irrigation as a separate "Department" in December 1978. Initially an irrigation scheme having cost unto Rs, 10,000 was classified as Minor Irrigation Scheme, but according to criteria laid down by the planning commission of India, effective from 1st April 1979, all irrigation projects, both surface water and ground water having culturable command area (CCA) up to 2000 hectares are classified as Minor Irrigation Scheme. Two autonomous bodies namely “Bihar Hill Area Lift Irrigation Corporation (BHALCO)” & “Bihar Jal Vikas Nigam” were functioning under the department. In July 1986 Govt. of Bihar decided to abolish “Bihar Jal Vikas Nigam” & created a “Tube well Wing” to develop network of tube wells in the state with the help of World Bank. This wing was headed by “Project -Coordinator”, an officer of Engineer-In-Chief rank. After bifurcation of Bihar in November 2000 BHALCO ceased to exist here & has been renamed as JHALCO by Govt. of Jharkhand. From April 2007 department's name has been changed and since then it is known as "Minor Water Resources Department" & “Laghu Jal Sansadhan Bivag” in Hindi.
+</p>
+<h3 id="vision" align="center">Vision</h3>
+<p align="center">
+The department is functioning with the objective of providing irrigation by executing and maintaining small schemes having command area up to 2000 hectares by utilising available ground water & surface water. Minor Irrigation Projects have great utility in Bihar because of the following reasons :— Minor Irrigation Projects provide irrigation in comparatively very short duration on very small investment. Minor Irrigation Projects are suitable in exploiting abundantly available small catchments with their network of natural drains, in the State. A Minor Irrigation Project gets completed in as short a period as within three construction season. A Minor Irrigation Project doesn't involve problems of rehabilitation and environmental degradation. Construction of a Minor Irrigation Project requires very small area; hence the land to be acquired by the Government for Minor Irrigation Projects is also not a problem. High patches of land in the command of a Major Irrigation Project don't get irrigated. Such patches of land could be provided irrigation with the help of a suitable type of Minor Irrigation Project. Thus a Minor Irrigation Project works as complimentary as well as supplementary project to a Major Irrigation Project. "Conjunctive Irrigation", which is nothing but exploitation of G/W in the command of Irrigation Project, does not allow the G/W to rise. This keeps at bay the problems of “Water-Logging” and “Salinity”. The above illustrated points underline the importance as well as utility of Minor Irrigation in overall efficient and optimum management of water as an invaluable natural resource.
+</p>
+<h3 id="abtsch" align="center">Mukhyamantri Niji Nalkoop Yojna</h3>
+<p align="center">
+The “Mukhyamantri Niji Nalkoop Yojna” scheme is being executed on the identified 18,747 command area for installation of Private Tubewell. The scheme involves inspection of the command area, identification of farmers, consent from the farmers and payment of subsidy upon installation of Tube well. In addition to the designated land area, farmers who would like to establish private tube wells on their own non-irrigated fields may apply online through the department. Following application reception, the process entails land inspection, scheme approval, tube well installation inspection, and subsidy payment.The department's plan can be used to raise agricultural output and irrigation capabilities throughout the state. The program is a component of the Bihar government's Saat Nischay - 02 "Har Khet Tak Sinchai ka Pani" project. Depending on their region and type, farmers might receive a 50% to 80% subsidy under this system for the installation of private tubewells. The "Har Khet Tak Sinchai Ka Paani" study comprised a comprehensive mobile application-based source identification of surface and ground water, including Ahar, Pyne, Ponds, Canals, Borings, and so forth. In order to construct a DPR based on these factors, it has been necessary to identify electricity sources, motor characteristics, command area (non-irrigated land), channel distribution, and anticipated scheme cost.
+</p>
+
 </body>
 </html>
