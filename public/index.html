@@ -10,7 +10,7 @@ function carousel() {
   var x = document.getElementsByClassName("mySlides");
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";  
-  }
+  } 
   myIndex++;
   if (myIndex > x.length) {myIndex = 1}    
   x[myIndex-1].style.display = "block";  
@@ -55,7 +55,8 @@ function carousel() {
 <button class="button button1" onclick="location.href='#aboutus';">About MWRD</button>
 <button class="button button2" onclick="location.href='#vision';">vision</button>
 <button class="button button3" onclick="location.href='#abtsch';">About The Scheme</button>
-<a href="/register" class="button">Register</a>
+<a href="/register" class="button">Register as Farmer</a>
+<a href="/register-govt" class="button">Register as Government Official</a>
 <a href="/login" class="button">Login</a>
 <h3 id="aboutus" align="center">About Us</h3>
 <p align="center">

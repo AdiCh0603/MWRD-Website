@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import pg from "pg";
 import path from "path";
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import env from "dotenv";
 import session from "express-session";
@@ -47,7 +46,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:4000/auth/google/callback",
+    callbackURL: `http://localhost:4000/auth/google/callback`,
     passReqToCallback: true
   },
   async (request, accessToken, refreshToken, profile, done) => {
@@ -94,24 +93,34 @@ app.get("/register", (req, res) => {
     res.sendFile(path.join(rootDir, "public", "register.html"));
 });
 
+// Route to serve the government official registration page
+app.get("/register-govt", (req, res) => {
+    res.sendFile(path.join(rootDir, "public", "govt_register.html"));
+});
+
+// Route to handle registration form submission for government officials
+app.post("/register-govt", (req, res) => {
+    const { username, password, dob, joined_date, profession, gender } = req.body;
+
+    const query = `
+      INSERT INTO govt_registration (username, password, dob, joined_date, profession, gender)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `;
+    const values = [username, password, dob, joined_date, profession, gender];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error("Error inserting data:", err);
+            res.status(500).send("Error registering government official.");
+        } else {
+            res.sendFile(path.join(rootDir, "public", "welcome.html")); 
+        }
+    });
+});
+
 // Route to serve the login page
 app.get("/login", (req, res) => {
     res.sendFile(path.join(rootDir, "public", "login.html"));
-});
-
-// Route to handle registration form submission
-app.post("/register", (req, res) => {
-    const { username, password } = req.body;
-
-    const query = "INSERT INTO registration_details (username, password) VALUES ($1, $2)";
-    db.query(query, [username, password], (err, result) => {
-        if (err) {
-            console.error("Error inserting data:", err);
-            res.status(500).send("Error registering user.");
-        } else {
-            res.send("User registered successfully.");
-        }
-    });
 });
 
 // Route to handle login form submission
@@ -138,11 +147,11 @@ app.get('/auth/google',
 
 // Route to handle the Google OAuth callback
 app.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/welcome.html');
-  });
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function(req, res) {
+      // Successful authentication, redirect to welcome.html
+      res.sendFile(path.join(rootDir, "public", "welcome.html")); 
+    });
 
 // Start the server and listen on the specified port
 app.listen(port, () => {
