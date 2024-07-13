@@ -7,5 +7,18 @@
 </head>
 <body>
     <h1>Welcome to the Website of MWRD Bihar</h1>
+    <div style="width: 300px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h2>Check Applied Schemes</h2>
+        <form action="/schemes" method="get">
+            <div style="margin-bottom: 15px;">
+                <label for="farmer_id">Enter Your ID:</label>
+                <input type="text" id="farmer_id" name="farmer_id" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box;" required>
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Check Schemes</button>
+        </form>
+        <form action="/apply-scheme" method="get">
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">Apply for a New Scheme</button>
+        </form>
+    </div>
 </body>
 </html>

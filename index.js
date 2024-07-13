@@ -51,7 +51,7 @@ passport.use(new GoogleStrategy({
   },
   async (request, accessToken, refreshToken, profile, done) => {
     try {
-        const result = await db.query("SELECT * FROM registration_details WHERE username = $1", [profile.email]);
+        const result = await db.query("SELECT * FROM registration WHERE username = $1", [profile.email]);
         if (result.rows.length === 0) {
             const newUser = await db.query(
                 "INSERT INTO registration_details (username, password) VALUES ($1, $2)",
@@ -98,47 +98,96 @@ app.get("/register-govt", (req, res) => {
     res.sendFile(path.join(rootDir, "public", "govt_register.html"));
 });
 
+app.get("/welcome", (req, res) => {
+    res.sendFile(path.join(rootDir, "public", "welcome.html"));
+});
+
+// Route to handle registration form submission for government officials
 // Route to handle registration form submission for government officials
 app.post("/register-govt", (req, res) => {
-    const { username, password, dob, joined_date, profession, gender } = req.body;
+    const { id, username, password, dob, joined_date, profession, gender } = req.body;
 
     const query = `
-      INSERT INTO govt_registration (username, password, dob, joined_date, profession, gender)
-      VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO govt_registration (emp_id, username, password, dob, joined_date, profession, gender)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
     `;
-    const values = [username, password, dob, joined_date, profession, gender];
+    const values = [id, username, password, dob, joined_date, profession, gender];
 
     db.query(query, values, (err, result) => {
         if (err) {
             console.error("Error inserting data:", err);
             res.status(500).send("Error registering government official.");
         } else {
-            res.sendFile(path.join(rootDir, "public", "welcome.html")); 
+            // Redirect to a specific URL after successful registration
+            res.redirect("/welcome");
         }
     });
 });
 
-// Route to serve the login page
-app.get("/login", (req, res) => {
-    res.sendFile(path.join(rootDir, "public", "login.html"));
-});
 
-// Route to handle login form submission
-app.post("/login", (req, res) => {
-    const { username, password } = req.body;
+app.post("/register", (req, res) => {
+    const { id, username, password, name, dob, gender, address, district } = req.body;
 
-    const query = "SELECT * FROM registration_details WHERE username = $1 AND password = $2";
-    db.query(query, [username, password], (err, result) => {
+    const query = `
+        INSERT INTO registration (id, username, password, name, dob, gender, address, district)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    `;
+    const values = [id, username, password, name, dob, gender, address, district];
+
+    db.query(query, values, (err, result) => {
         if (err) {
-            console.error("Error querying data:", err);
-            res.status(500).send("Error logging in user.");
-        } else if (result.rows.length > 0) {
-            res.send("Login successful.");
+            console.error("Error inserting data:", err);
+            res.status(500).send("Error registering user.");
         } else {
-            res.status(401).send("Invalid username or password.");
+            // Redirect to a specific URL
+            res.redirect("/welcome");
         }
     });
 });
+
+// Route to fetch schemes applied by a farmer based on ID
+// Route to fetch schemes applied by a farmer based on ID
+app.get("/schemes", (req, res) => {
+    const farmerId = req.query.farmer_id;
+
+    // Query to fetch schemes applied by the farmer based on farmerId
+    const query = `
+        SELECT i.*, r.name AS farmer_name 
+        FROM inspection i
+        INNER JOIN registration r ON i.farm_id = r.id
+        WHERE i.farm_id = $1
+    `;
+    const values = [farmerId];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error("Error fetching schemes:", err);
+            res.status(500).send("Error fetching schemes.");
+        } else {
+            const schemes = result.rows;
+            
+            // Render the schemes directly in response
+            res.send(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Schemes Applied</title>
+                </head>
+                <body>
+                    <h1>Schemes Applied by Farmer</h1>
+                    <ul>
+                        ${schemes.map(scheme => `<li>${scheme.name} - ${scheme.status}</li>`).join("")}
+                    </ul>
+                    <a href="/">Back to Home</a>
+                </body>
+                </html>
+            `);
+        }
+    });
+});
+
 
 // Route to start the Google OAuth process
 app.get('/auth/google',
@@ -147,7 +196,7 @@ app.get('/auth/google',
 
 // Route to handle the Google OAuth callback
 app.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/login' }),
+    passport.authenticate('google', { failureRedirect: '/register' }),
     function(req, res) {
       // Successful authentication, redirect to welcome.html
       res.sendFile(path.join(rootDir, "public", "welcome.html")); 
