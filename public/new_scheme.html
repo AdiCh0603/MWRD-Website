@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for a New Scheme</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f7f7f7; margin: 0; padding: 0;">
+    <h1 style="text-align: center; color: #333; margin-top: 50px;">Apply for a New Scheme</h1>
+    <div style="width: 300px; margin: 20px auto; padding: 20px; background-color: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <form action="/submit-scheme" method="post">
+            <div style="margin-bottom: 15px;">
+                <label for="farm_id" style="display: block; margin-bottom: 5px;">Farm ID:</label>
+                <input type="text" id="farm_id" name="farm_id" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;" required>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="apply_date" style="display: block; margin-bottom: 5px;">Apply Date:</label>
+                <input type="date" id="apply_date" name="apply_date" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;" required>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="scheme_name" style="display: block; margin-bottom: 5px;">Scheme Name:</label>
+                <input type="text" id="scheme_name" name="scheme_name" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;" required>
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Submit Application</button>
+        </form>
+    </div>
+</body>
+</html>

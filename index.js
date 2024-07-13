@@ -98,11 +98,6 @@ app.get("/register-govt", (req, res) => {
     res.sendFile(path.join(rootDir, "public", "govt_register.html"));
 });
 
-app.get("/welcome", (req, res) => {
-    res.sendFile(path.join(rootDir, "public", "welcome.html"));
-});
-
-// Route to handle registration form submission for government officials
 // Route to handle registration form submission for government officials
 app.post("/register-govt", (req, res) => {
     const { id, username, password, dob, joined_date, profession, gender } = req.body;
@@ -119,12 +114,12 @@ app.post("/register-govt", (req, res) => {
             res.status(500).send("Error registering government official.");
         } else {
             // Redirect to a specific URL after successful registration
-            res.redirect("/welcome");
+            res.redirect("/govt-welcome");
         }
     });
 });
 
-
+// Route to handle registration form submission for general users
 app.post("/register", (req, res) => {
     const { id, username, password, name, dob, gender, address, district } = req.body;
 
@@ -139,13 +134,12 @@ app.post("/register", (req, res) => {
             console.error("Error inserting data:", err);
             res.status(500).send("Error registering user.");
         } else {
-            // Redirect to a specific URL
+            // Redirect to a specific URL after successful registration
             res.redirect("/welcome");
         }
     });
 });
 
-// Route to fetch schemes applied by a farmer based on ID
 // Route to fetch schemes applied by a farmer based on ID
 app.get("/schemes", (req, res) => {
     const farmerId = req.query.farmer_id;
@@ -188,7 +182,6 @@ app.get("/schemes", (req, res) => {
     });
 });
 
-
 // Route to start the Google OAuth process
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
@@ -201,6 +194,125 @@ app.get('/auth/google/callback',
       // Successful authentication, redirect to welcome.html
       res.sendFile(path.join(rootDir, "public", "welcome.html")); 
     });
+
+// Route to serve the government official welcome page
+app.get("/govt-welcome", (req, res) => {
+    res.sendFile(path.join(rootDir, "public", "govt_welcome.html"));
+});
+
+// Route to fetch schemes applied in new_entry table
+app.get("/govt-schemes", (req, res) => {
+    // Query to fetch all schemes from new_entry table
+    const query = `
+        SELECT *
+        FROM new_entry
+    `;
+
+    db.query(query, (err, result) => {
+        if (err) {
+            console.error("Error fetching schemes:", err);
+            res.status(500).send("Error fetching schemes.");
+        } else {
+            const schemes = result.rows;
+
+            // Render the schemes with approve and disapprove buttons
+            res.send(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Schemes to Approve/Disapprove</title>
+                </head>
+                <body>
+                    <h1>Schemes to Approve/Disapprove</h1>
+                    <ul>
+                        ${schemes.map(scheme => `
+                            <li>
+                                ${scheme.farm_id} - Applied on ${scheme.date_applied} for "${scheme.name}"
+                                <form action="/approve-scheme" method="post">
+                                    <input type="hidden" name="scheme_id" value="${scheme.id}">
+                                    <button type="submit" name="action" value="approve">Approve</button>
+                                </form>
+                                <form action="/approve-scheme" method="post">
+                                    <input type="hidden" name="scheme_id" value="${scheme.id}">
+                                    <button type="submit" name="action" value="disapprove">Disapprove</button>
+                                </form>
+                            </li>
+                        `).join("")}
+                    </ul>
+                    <a href="/govt-welcome">Back to Welcome Page</a>
+                </body>
+                </html>
+            `);
+        }
+    });
+});
+
+// Route to handle approval or disapproval of a scheme
+app.post("/approve-scheme", (req, res) => {
+    const { scheme_id, action } = req.body;
+
+    let query;
+    if (action === "approve") {
+        query = `
+            UPDATE new_entry
+            SET approved = true
+            WHERE id = $1
+        `;
+    } else if (action === "disapprove") {
+        query = `
+            UPDATE new_entry
+            SET approved = false
+            WHERE id = $1
+        `;
+    }
+
+    db.query(query, [scheme_id], (err, result) => {
+        if (err) {
+            console.error("Error updating scheme status:", err);
+            res.status(500).send("Error updating scheme status.");
+        } else {
+            // Redirect back to the schemes list after update
+            res.redirect("/govt-schemes");
+        }
+    });
+});
+
+// Route to serve the new scheme application form
+app.get("/apply-scheme", (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Apply for a New Scheme</title>
+        </head>
+        <body>
+            <h1>Apply for a New Scheme</h1>
+            <div style="width: 300px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <form action="/apply-scheme" method="post">
+                    <div style="margin-bottom: 15px;">
+                        <label for="farm_id">Farm ID:</label>
+                        <input type="text" id="farm_id" name="farm_id" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box;" required>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="date_applied">Date Applied:</label>
+                        <input type="date" id="date_applied" name="date_applied" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box;" required>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="scheme_name">Scheme Name:</label>
+                        <input type="text" id="scheme_name" name="scheme_name" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box;" required>
+                    </div>
+                    <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Submit Application</button>
+                </form>
+            </div>
+            <a href="/govt-welcome">Back to Welcome Page</a>
+        </body>
+        </html>
+    `);
+});
 
 // Start the server and listen on the specified port
 app.listen(port, () => {
