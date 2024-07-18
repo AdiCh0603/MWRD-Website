@@ -14,14 +14,20 @@ const app = express();
 const port = 4000; // Port number for running the server locally
 
 // PostgreSQL database configuration
-const db = new pg.Client({
-    user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
-    password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT
-});
+// const db = new pg.Client({
+//     user: process.env.PG_USER,
+//     host: process.env.PG_HOST,
+//     database: process.env.PG_DATABASE,
+//     password: process.env.PG_PASSWORD,
+//     port: process.env.PG_PORT
+// });
 
+
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+})
 // Connect to the PostgreSQL database
 db.connect(err => {
     if (err) {
@@ -135,7 +141,7 @@ app.post("/register", (req, res) => {
             res.status(500).send("Error registering user.");
         } else {
             // Redirect to a specific URL after successful registration
-            res.redirect("/welcome");
+            res.sendFile(path.join(rootDir, "public", "welcome.html")); 
         }
     });
 });
