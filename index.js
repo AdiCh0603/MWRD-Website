@@ -25,7 +25,7 @@ const port = 4000; // Port number for running the server locally
 
 const { Pool } = pg;
 
-const pool = new Pool({
+const db = new Pool({
   connectionString: process.env.POSTGRES_URL,
 })
 // Connect to the PostgreSQL database
